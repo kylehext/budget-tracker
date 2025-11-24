@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+
+# Flask
+flask_session/
+
+# Environment variables
+.env
+
+# Instance folder
+instance/
+
