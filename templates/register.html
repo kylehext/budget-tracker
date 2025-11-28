@@ -1,10 +1,32 @@
-{% extends "layout.html" %}
-{% block title %} Register {% endblock %}
-
-{% block main %}
-    <form method="post" action="/register" class="container mt-5" style="max-width: 400px;">
-        <input autocomplete="off" autofocus type="text" id="username" name ="username" placeholder="Username" class="username-input">
-        <input autocomplete="off" type="password" id="password" name ="password" placeholder="Password" class="password-input">
-        <button type="submit" class="btn btn-primary btn-block mt-3">Register</button>
-    </form>
+{% extends "layout.html" %} {% block title %} Register {% endblock %} {% block
+main %}
+<h2 class="register-text">Create an Account</h2>
+<form
+  method="post"
+  action="/register"
+  class="container mt-5"
+  style="max-width: 400px"
+  autocomplete="off"
+>
+  <p class="username-text">Username:</p>
+  <input
+    autocomplete="off"
+    autofocus
+    type="text"
+    id="username"
+    name="username"
+    placeholder="Username"
+    class="username-input"
+  />
+  <p class="password-text">Password:</p>
+  <input
+    autocomplete="off"
+    type="password"
+    id="password"
+    name="password"
+    placeholder="Password"
+    class="password-input"
+  />
+  <button type="submit" class="btn btn-primary btn-block mt-3">Register</button>
+</form>
 {% endblock %}

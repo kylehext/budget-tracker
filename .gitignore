@@ -11,6 +11,4 @@ flask_session/
 # Environment variables
 .env
 
-# Instance folder
-instance/
 

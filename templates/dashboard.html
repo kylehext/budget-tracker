@@ -1,8 +1,31 @@
-{% extends "layout.html" %} {% block title %} Home {% endblock %} {% block main
+{% extends "layout.html" %} {% block title %} Dashboard {% endblock %} {% block main
 %}
-<div class="main-text">
-  <h2 class="main-title">Welcome Back {{ username }}!</h2>
+<div class="dashboard-main-text">
+  <h2 class="main-title">Welcome Back, {{ username }}!</h2>
   <p>Your Budget and Savings Goals</p>
 </div>
+{% if not goals %}
+  <p class="no-goals-text">You have no goals yet. Add a new goal to get started!</p>
+  <button class="btn btn-primary mt-3 add-goals-button" id="myBtn" type="submit">+</button>
+<!-- Modal created through W3schools https://www.w3schools.com/howto/howto_css_modals.asp -->
+  <!-- The Modal -->
+<div id="myModal" class="modal">
 
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p>Select a type of goal: </p>
+    <select id="goal-type-select" class="goal-type-select">
+      <option value="" disabled selected>Select your goal type</option>
+      <option value="budget">Budget Goal</option>
+      <option value="savings">Savings Goal</option>
+    </select>
+  </div>
+
+</div>
+{% else %}
+
+{% endif %}
+
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
 {% endblock %}
