@@ -1,31 +1,78 @@
-{% extends "layout.html" %} {% block title %} Dashboard {% endblock %} {% block main
-%}
+{% extends "layout.html" %} {% block title %} Dashboard {% endblock %} {% block
+main %}
 <div class="dashboard-main-text">
   <h2 class="main-title">Welcome Back, {{ username }}!</h2>
   <p>Your Budget and Savings Goals</p>
 </div>
 {% if not goals %}
-  <p class="no-goals-text">You have no goals yet. Add a new goal to get started!</p>
-  <button class="btn btn-primary mt-3 add-goals-button" id="myBtn" type="submit">+</button>
+<p class="no-goals-text">
+  You have no goals yet. Add a new goal to get started!
+</p>
+<button class="btn btn-primary mt-3 add-goals-button" id="myBtn" type="submit">
+  +
+</button>
 <!-- Modal created through W3schools https://www.w3schools.com/howto/howto_css_modals.asp -->
-  <!-- The Modal -->
+<!-- The Modal -->
 <div id="myModal" class="modal">
-
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close">&times;</span>
-    <p>Select a type of goal: </p>
+    <p>Select a type of goal:</p>
     <select id="goal-type-select" class="goal-type-select">
-      <option value="" disabled selected>Select your goal type</option>
+      <option value="" disabled selected>Select your option</option>
       <option value="budget">Budget Goal</option>
       <option value="savings">Savings Goal</option>
     </select>
   </div>
-
 </div>
 {% else %}
+<div class="goals-container">
+  {% for goal in goals %}
+  <div class="goal-card">
+    <h3 class="goal-title">{{ goal.title }}</h3>
+    <p class="goal-description">{{ goal.description }}</p>
+    {% if goal.goal_type == 'savings' %}
+    <p class="current-amount">Current Amount: ${{ goal.current_amount }}</p>
+    {% endif %} {% if goal.goal_type == 'budget' %}
+    <p class="goal-amount">Money Left to Spend: ${{ goal.target_amount }}</p>
+    {% else %}
+    <p class="goal-amount">Target Amount: ${{ goal.target_amount }}</p>
+    {% endif %}
+    <div class="value-change">
+      <button type="button" class="decrement">-</button>
+      <button type="button" class="increment">+</button>
+      <input type="number" id="current-value" value="0" min="0" step="0.01" autocomplete="off"/>
+      <div class="action-buttons">
+        <button type="button" class="delete-goal">
+          <i class="bi bi-trash"></i>
+        </button>
+        <button type="button" class="confirm-value">
+          <i class="bi bi-check"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<button class="btn btn-primary mt-3 add-goals-button" id="myBtn" type="submit">
+  +
+</button>
 
-{% endif %}
+<!-- Modal created through W3schools https://www.w3schools.com/howto/howto_css_modals.asp -->
+<!-- The Modal -->
+<div id="myModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p>Select a type of goal:</p>
+    <select id="goal-type-select" class="goal-type-select">
+      <option value="" disabled selected>Select your option</option>
+      <option value="budget">Budget Goal</option>
+      <option value="savings">Savings Goal</option>
+    </select>
+  </div>
+  {% endif %}
 
-<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
-{% endblock %}
+  <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+  {% endblock %}
+</div>

@@ -17,15 +17,30 @@ db = SQL("sqlite:///instance/database.db")
 
 @app.route('/')
 def index():
-    # Check if user is logged in
     if session.get('user_id'):
-        # User is logged in - show their budget/goals
-        user = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
-        #goals = db.execute("SELECT * FROM goals WHERE user_id = ?", session["user_id"])
-        return render_template('dashboard.html', username=user[0]["username"])
-    else:
-        # User is not logged in - show welcome/homepage
-        return render_template('index.html')
+        return redirect('/dashboard')
+    return render_template('index.html')
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    if request.method == 'POST':
+        goal_type = request.form.get('goal_type')
+        title = request.form.get('title')
+        description = request.form.get('description')
+        target_amount = request.form.get('target_amount')
+        current_amount = request.form.get('current_amount', 0)
+        
+        # Insert new goal into database
+        db.execute("INSERT INTO goals (user_id, goal_type, title, description, target_amount, current_amount) VALUES (?, ?, ?, ?, ?, ?)",
+                   session["user_id"], goal_type, title, description, target_amount, current_amount)
+        
+        flash('Goal added successfully!')
+        return redirect('/dashboard')
+    
+    # GET request - show dashboard
+    user = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
+    goals = db.execute("SELECT * FROM goals WHERE user_id = ?", session["user_id"])
+    return render_template('dashboard.html', username=user[0]["username"], goals=goals)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
