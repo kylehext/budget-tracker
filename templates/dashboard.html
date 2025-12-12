@@ -44,7 +44,7 @@ main %}
         {% if goal.goal_type == 'savings' %}
         <p class="current-amount">Current Amount: ${{ goal.current_amount }}</p>
         {% endif %} {% if goal.goal_type == 'budget' %}
-        <p class="goal-amount">Budget Remaining: ${{ goal.target_amount }}</p>
+        <p class="goal-amount">Budget Remaining: ${{ (goal.target_amount - goal.current_amount)|round(2) }}</p>
         {% else %}
         <p class="goal-amount">Target Amount: ${{ goal.target_amount }}</p>
         {% endif %}
@@ -53,7 +53,11 @@ main %}
       <!-- Modified as needed to fit design -->
       <!-- Progress Bar Section -->
       <div class="progress-section">
+        {% if goal.goal_type == 'savings' %}
         <p class="progress-label">Progress</p>
+        {% else %}
+        <p class="progress-label">Budget Used</p>
+        {% endif %}
         <div class="progress-bar-container">
           <div
             class="progress-bar-fill"
