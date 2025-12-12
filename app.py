@@ -97,3 +97,54 @@ def login():
 def logout():
     session.clear()
     return redirect('/')
+
+# Two routes created with help from claude.ai to ensure confirm button updates database and progress bar,
+# and the delete button removes the goal from the database and DOM.
+@app.route('/update-goal/<int:goal_id>', methods=['POST'])
+def update_goal(goal_id):
+    """Update the current amount for a goal"""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Not logged in'}), 401
+    
+    try:
+        data = request.get_json()
+        new_amount = data.get('current_amount')
+        
+        # Verify the goal belongs to the current user
+        goal = db.execute("SELECT * FROM goals WHERE id = ? AND user_id = ?", 
+                         goal_id, session['user_id'])
+        
+        if not goal:
+            return jsonify({'success': False, 'error': 'Goal not found'}), 404
+        
+        # Update the current_amount in the database
+        db.execute("UPDATE goals SET current_amount = ? WHERE id = ?", 
+                  new_amount, goal_id)
+        
+        return jsonify({'success': True})
+    
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/delete-goal/<int:goal_id>', methods=['POST'])
+def delete_goal(goal_id):
+    """Delete a goal"""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Not logged in'}), 401
+    
+    try:
+        # Verify the goal belongs to the current user
+        goal = db.execute("SELECT * FROM goals WHERE id = ? AND user_id = ?", 
+                         goal_id, session['user_id'])
+        
+        if not goal:
+            return jsonify({'success': False, 'error': 'Goal not found'}), 404
+        
+        # Delete the goal from the database
+        db.execute("DELETE FROM goals WHERE id = ?", goal_id)
+        
+        return jsonify({'success': True})
+    
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500

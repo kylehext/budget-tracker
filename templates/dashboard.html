@@ -27,29 +27,60 @@ main %}
 </div>
 {% else %}
 <div class="goals-container">
-  {% for goal in goals %}
-  <div class="goal-card">
-    <h3 class="goal-title">{{ goal.title }}</h3>
-    <p class="goal-description">{{ goal.description }}</p>
-    {% if goal.goal_type == 'savings' %}
-    <p class="current-amount">Current Amount: ${{ goal.current_amount }}</p>
-    {% endif %} {% if goal.goal_type == 'budget' %}
-    <p class="goal-amount">Money Left to Spend: ${{ goal.target_amount }}</p>
-    {% else %}
-    <p class="goal-amount">Target Amount: ${{ goal.target_amount }}</p>
-    {% endif %}
+  {% for goal in goals %} {% set percentage = (goal.current_amount /
+  goal.target_amount * 100) if goal.target_amount > 0 else 0 %} {% set
+  display_percentage = 100 if percentage > 100 else percentage %}
+
+  <div class="goal-card" data-goal-id="{{ goal.id }}">
+    <!-- Delete button at top right -->
+    <button type="button" class="delete-goal">
+      <i class="bi bi-trash"></i>
+    </button>
+
+    <div class="goal-details">
+      <div class="goal-info">
+        <h3 class="goal-title">{{ goal.title }}</h3>
+        <p class="goal-description">{{ goal.description }}</p>
+        {% if goal.goal_type == 'savings' %}
+        <p class="current-amount">Current Amount: ${{ goal.current_amount }}</p>
+        {% endif %} {% if goal.goal_type == 'budget' %}
+        <p class="goal-amount">Budget Remaining: ${{ goal.target_amount }}</p>
+        {% else %}
+        <p class="goal-amount">Target Amount: ${{ goal.target_amount }}</p>
+        {% endif %}
+      </div>
+      <!-- Progress Bar created with help from claude.ai -->
+      <!-- Modified as needed to fit design -->
+      <!-- Progress Bar Section -->
+      <div class="progress-section">
+        <p class="progress-label">Progress</p>
+        <div class="progress-bar-container">
+          <div
+            class="progress-bar-fill"
+            data-current="{{ goal.current_amount }}"
+            data-target="{{ goal.target_amount }}"
+            style="height: {{ display_percentage }}%"
+          ></div>
+        </div>
+        <p class="progress-percentage">{{ "%.0f"|format(percentage) }}%</p>
+      </div>
+    </div>
+
+    <!-- Bottom right controls -->
     <div class="value-change">
       <button type="button" class="decrement">-</button>
       <button type="button" class="increment">+</button>
-      <input type="number" id="current-value" value="0" min="0" step="0.01" autocomplete="off"/>
-      <div class="action-buttons">
-        <button type="button" class="delete-goal">
-          <i class="bi bi-trash"></i>
-        </button>
-        <button type="button" class="confirm-value">
-          <i class="bi bi-check"></i>
-        </button>
-      </div>
+      <input
+        type="number"
+        id="current-value"
+        value="0"
+        min="0"
+        step="0.01"
+        autocomplete="off"
+      />
+      <button type="button" class="confirm-value">
+        <i class="bi bi-check"></i>
+      </button>
     </div>
   </div>
   {% endfor %}
@@ -57,7 +88,6 @@ main %}
 <button class="btn btn-primary mt-3 add-goals-button" id="myBtn" type="submit">
   +
 </button>
-
 <!-- Modal created through W3schools https://www.w3schools.com/howto/howto_css_modals.asp -->
 <!-- The Modal -->
 <div id="myModal" class="modal">
@@ -71,8 +101,7 @@ main %}
       <option value="savings">Savings Goal</option>
     </select>
   </div>
-  {% endif %}
-
-  <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
-  {% endblock %}
 </div>
+{% endif %}
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+{% endblock %}

@@ -1,4 +1,6 @@
 // Javascript for modal functionality created through w3schools https://www.w3schools.com/howto/howto_css_modals.asp
+// Progress bar functionality and database management created with help from claude.ai
+
 // Get the modal
 var modal = document.getElementById("myModal");
 
@@ -45,7 +47,7 @@ goalTypeSelect.addEventListener("change", function () {
   formContent.id = "goal-form-content";
   formContent.className = "goal-form-content";
 
-  if (selectedType === "budget") {
+if (selectedType === "budget") {
     formContent.innerHTML = `
     <div class="goal-form-content">
       <h4 class="form-title">Budget Goal</h4>
@@ -64,14 +66,18 @@ goalTypeSelect.addEventListener("change", function () {
         
         <div class="form-group">
           <label for="budget-amount">Budget Amount:</label>
-          <input type="number" id="budget-amount" name="target_amount" step="1" required>
+          <div style="display: flex; align-items: center;">
+            <span style="margin-right: 5px; font-weight: bold;">$</span>
+            <input type="number" id="budget-amount" name="target_amount" step="1" value="0" required style="max-width: 200px;">
+          </div>
         </div>
    
         <button type="submit" class="btn btn-primary">Create Budget Goal</button>
       </form>
     </div>
     `;
-  } else if (selectedType === "savings") {
+
+} else if (selectedType === "savings") {
     formContent.innerHTML = `
     <div class="goal-form-content">
       <h4 class="form-title">Savings Goal</h4>
@@ -89,12 +95,18 @@ goalTypeSelect.addEventListener("change", function () {
         
         <div class="form-group">
           <label for="target-amount">Target Amount:</label>
-          <input type="number" id="target-amount" name="target_amount" step="1" required>
+          <div style="display: flex; align-items: center;">
+            <span style="margin-right: 5px; font-weight: bold;">$</span>
+            <input type="number" id="target-amount" name="target_amount" step="1" value="0" required style="max-width: 200px;">
+          </div>
         </div>
         
         <div class="form-group">
           <label for="current-amount">Current Amount:</label>
-          <input type="number" id="current-amount" name="current_amount" step="1" value="0">
+          <div style="display: flex; align-items: center;">
+            <span style="margin-right: 5px; font-weight: bold;">$</span>
+            <input type="number" id="current-amount" name="current_amount" step="1" value="0" style="max-width: 200px;">
+          </div>
         </div>
         
         <button type="submit" class="btn btn-primary">Create Savings Goal</button>
@@ -105,9 +117,147 @@ goalTypeSelect.addEventListener("change", function () {
 
   // Insert the form after the dropdown
   goalTypeSelect.parentElement.appendChild(formContent);
-
-  // Initialize current value to 0 when the form is created or page is refreshed
-  window.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("current-value").value = 0;
 });
+
+// Initialize on page load
+document.addEventListener("DOMContentLoaded", () => {
+  // Set all current-value inputs to 0
+  document.querySelectorAll("#current-value").forEach(input => {
+    input.value = "0";
+  });
+
+  // Progress bar functionality created with help from claude.ai
+  // Function to update progress bar
+  function updateProgressBar(goalCard, currentAmount, targetAmount) {
+    const progressFill = goalCard.querySelector(".progress-bar-fill");
+    const progressPercentage = goalCard.querySelector(".progress-percentage");
+    const currentAmountDisplay = goalCard.querySelector(".current-amount");
+
+    const percentage = targetAmount > 0 ? (currentAmount / targetAmount) * 100 : 0;
+    const displayPercentage = Math.min(percentage, 100);
+
+    // Update the fill height
+    progressFill.style.height = displayPercentage + "%";
+
+    // Update percentage text
+    progressPercentage.textContent = Math.round(percentage) + "%";
+
+    // Update current amount display
+    if (currentAmountDisplay) {
+      currentAmountDisplay.textContent = `Current Amount: $${currentAmount.toFixed(2)}`;
+    }
+
+    // Add/remove over-goal class
+    if (percentage > 100) {
+      progressFill.classList.add("over-goal");
+    } else {
+      progressFill.classList.remove("over-goal");
+    }
+
+    // Update data attributes
+    progressFill.dataset.current = currentAmount;
+  }
+
+  // Handle increment button - adds $1 to the input value
+  document.querySelectorAll(".increment").forEach((button) => {
+    button.addEventListener("click", function () {
+      const goalCard = this.closest(".goal-card");
+      const input = goalCard.querySelector("#current-value");
+      const currentValue = parseFloat(input.value) || 0;
+      input.value = (currentValue + 1).toFixed(2);
+    });
+  });
+
+  // Handle decrement button - subtracts $1 from the input value
+  document.querySelectorAll(".decrement").forEach((button) => {
+    button.addEventListener("click", function () {
+      const goalCard = this.closest(".goal-card");
+      const input = goalCard.querySelector("#current-value");
+      const currentValue = parseFloat(input.value) || 0;
+      input.value = (currentValue - 1).toFixed(2);
+    });
+  });
+
+  // Handle confirm button - updates the progress bar with the new value
+  document.querySelectorAll(".confirm-value").forEach((button) => {
+    button.addEventListener("click", function () {
+      const goalCard = this.closest(".goal-card");
+      const input = goalCard.querySelector("#current-value");
+      const progressFill = goalCard.querySelector(".progress-bar-fill");
+      const goalId = goalCard.dataset.goalId;
+
+      const currentAmount = parseFloat(progressFill.dataset.current) || 0;
+      const targetAmount = parseFloat(progressFill.dataset.target) || 0;
+      const changeAmount = parseFloat(input.value) || 0;
+
+      // Calculate new amount
+      const newAmount = currentAmount + changeAmount;
+
+      // Update progress bar visually
+      updateProgressBar(goalCard, newAmount, targetAmount);
+
+      // Reset input to 0
+      input.value = "0.00";
+
+      // Send update to backend to persist the change
+      fetch(`/update-goal/${goalId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          current_amount: newAmount
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log("Goal updated successfully");
+        } else {
+          console.error("Failed to update goal");
+          alert("Failed to update goal. Please try again.");
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
+      });
+    });
+  });
+
+  // Handle delete button - deletes the goal
+  document.querySelectorAll(".delete-goal").forEach((button) => {
+    button.addEventListener("click", function () {
+      const goalCard = this.closest(".goal-card");
+      const goalId = goalCard.dataset.goalId;
+      
+      // Confirm deletion
+      if (confirm("Are you sure you want to delete this goal?")) {
+        // Send delete request to backend
+        fetch(`/delete-goal/${goalId}`, {
+          method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            goalCard.remove();
+            console.log("Goal deleted successfully");
+            
+            // Check if there are no more goals and reload page to show "no goals" message
+            const remainingGoals = document.querySelectorAll(".goal-card");
+            if (remainingGoals.length === 0) {
+              location.reload();
+            }
+          } else {
+            console.error("Failed to delete goal");
+            alert("Failed to delete goal. Please try again.");
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("An error occurred. Please try again.");
+        });
+      }
+    });
+  });
 });
