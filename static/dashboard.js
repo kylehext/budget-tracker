@@ -132,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const progressFill = goalCard.querySelector(".progress-bar-fill");
     const progressPercentage = goalCard.querySelector(".progress-percentage");
     const currentAmountDisplay = goalCard.querySelector(".current-amount");
+    const budgetRemainingDisplay = goalCard.querySelector(".goal-amount");
 
     const percentage = targetAmount > 0 ? (currentAmount / targetAmount) * 100 : 0;
     const displayPercentage = Math.min(percentage, 100);
@@ -145,6 +146,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update current amount display
     if (currentAmountDisplay) {
       currentAmountDisplay.textContent = `Current Amount: $${currentAmount.toFixed(2)}`;
+    }
+
+    // Update budget remaining display for budget goals
+    if (budgetRemainingDisplay) {
+      const remaining = targetAmount - currentAmount;
+      budgetRemainingDisplay.textContent = `Budget Remaining: $${remaining.toFixed(2)}`;
     }
 
     // Add/remove over-goal class
