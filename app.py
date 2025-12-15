@@ -5,7 +5,10 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-app.config['DEBUG'] = True
+
+# Secret key for session signing
+app.config["SECRET_KEY"] = "dev-key-for-cs50-final-project"
+
 
 # Configure session
 app.config["SESSION_PERMANENT"] = False
@@ -23,6 +26,10 @@ def index():
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
+    # Ensure user is logged in
+    if 'user_id' not in session:
+        return redirect('/login')
+    
     if request.method == 'POST':
         goal_type = request.form.get('goal_type')
         title = request.form.get('title')
@@ -50,7 +57,7 @@ def register():
         
         # Validation
         if not username or not password:
-            flash('Username and password required')
+            flash('Username and password required', 'danger')
             return redirect('/register')
         
         # Hash password
@@ -62,7 +69,7 @@ def register():
                        username, hashed)
             return redirect('/login')
         except:
-            flash('Username already exists')
+            flash('Username already exists', 'danger')
             return redirect('/register')
     
     return render_template('register.html')
@@ -76,7 +83,7 @@ def login():
         
         # Validation
         if not username or not password:
-            flash('Username and password required')
+            flash('Username and password required', 'danger')
             return redirect('/login')
         
         # Query database
@@ -84,11 +91,12 @@ def login():
         
         # Check credentials
         if len(rows) != 1 or not check_password_hash(rows[0]["password"], password):
-            flash('Invalid credentials')
+            flash('Invalid credentials', 'danger')
             return redirect('/login')
         
         # Remember user
         session["user_id"] = rows[0]["id"]
+        flash('Successfully logged in!', 'success')
         return redirect('/')
         
     return render_template('login.html')
