@@ -2,20 +2,22 @@
 main %}
 
 <!-- Flash Messages Section -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="flash-messages">
-      {% for category, message in messages %}
-        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+%}
+<div class="flash-messages">
+  {% for category, message in messages %}
+  <div
+    class="alert alert-{{ category }} alert-dismissible fade show"
+    role="alert"
+  >
+    {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %} {% endwith %}
 
 <div class="dashboard-main-text">
   <h2 class="main-title">Welcome Back, {{ username }}!</h2>
@@ -48,7 +50,7 @@ main %}
   goal.target_amount * 100) if goal.target_amount > 0 else 0 %} {% set
   display_percentage = 100 if percentage > 100 else percentage %}
 
-  <div class="goal-card" data-goal-id="{{ goal.id }}">
+  <div class="goal-card" data-goal-id="{{ goal.id }}" data-goal-type="{{ goal.goal_type }}">
     <!-- Delete button at top right -->
     <button type="button" class="delete-goal">
       <i class="bi bi-trash"></i>
@@ -60,10 +62,12 @@ main %}
         <p class="goal-description">{{ goal.description }}</p>
         {% if goal.goal_type == 'savings' %}
         <p class="current-amount">Current Amount: ${{ goal.current_amount }}</p>
+        <p class="goal-amount">Left to Save: ${{ (goal.target_amount - goal.current_amount)|round(2)}}</p>
         {% endif %} {% if goal.goal_type == 'budget' %}
-        <p class="goal-amount">Budget Remaining: ${{ (goal.target_amount - goal.current_amount)|round(2) }}</p>
-        {% else %}
-        <p class="goal-amount">Target Amount: ${{ goal.target_amount }}</p>
+        <p class="goal-amount">
+          Budget Remaining: ${{ (goal.target_amount -
+          goal.current_amount)|round(2) }}
+        </p>
         {% endif %}
       </div>
       <!-- Progress Bar created with help from claude.ai -->

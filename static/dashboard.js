@@ -47,7 +47,7 @@ goalTypeSelect.addEventListener("change", function () {
   formContent.id = "goal-form-content";
   formContent.className = "goal-form-content";
 
-if (selectedType === "budget") {
+  if (selectedType === "budget") {
     formContent.innerHTML = `
     <div class="goal-form-content">
       <h4 class="form-title">Budget Goal</h4>
@@ -76,8 +76,7 @@ if (selectedType === "budget") {
       </form>
     </div>
     `;
-
-} else if (selectedType === "savings") {
+  } else if (selectedType === "savings") {
     formContent.innerHTML = `
     <div class="goal-form-content">
       <h4 class="form-title">Savings Goal</h4>
@@ -122,7 +121,7 @@ if (selectedType === "budget") {
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", () => {
   // Set all current-value inputs to 0
-  document.querySelectorAll("#current-value").forEach(input => {
+  document.querySelectorAll("#current-value").forEach((input) => {
     input.value = "0";
   });
 
@@ -132,9 +131,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const progressFill = goalCard.querySelector(".progress-bar-fill");
     const progressPercentage = goalCard.querySelector(".progress-percentage");
     const currentAmountDisplay = goalCard.querySelector(".current-amount");
-    const budgetRemainingDisplay = goalCard.querySelector(".goal-amount");
+    const goalAmountDisplay = goalCard.querySelector(".goal-amount");
+    const goalType = goalCard.dataset.goalType; // Get goal type from data attribute
 
-    const percentage = targetAmount > 0 ? (currentAmount / targetAmount) * 100 : 0;
+    const percentage =
+      targetAmount > 0 ? (currentAmount / targetAmount) * 100 : 0;
     const displayPercentage = Math.min(percentage, 100);
 
     // Update the fill height
@@ -143,15 +144,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update percentage text
     progressPercentage.textContent = Math.round(percentage) + "%";
 
-    // Update current amount display
+    // Update current amount display (for savings goals)
     if (currentAmountDisplay) {
-      currentAmountDisplay.textContent = `Current Amount: $${currentAmount.toFixed(2)}`;
+      currentAmountDisplay.textContent = `Current Amount: $${currentAmount.toFixed(
+        2
+      )}`;
     }
 
-    // Update budget remaining display for budget goals
-    if (budgetRemainingDisplay) {
+    // Update the goal amount display based on goal type
+    if (goalAmountDisplay) {
       const remaining = targetAmount - currentAmount;
-      budgetRemainingDisplay.textContent = `Budget Remaining: $${remaining.toFixed(2)}`;
+
+      if (goalType === "budget") {
+        goalAmountDisplay.textContent = `Budget Remaining: $${remaining.toFixed(
+          2
+        )}`;
+      } else if (goalType === "savings") {
+        goalAmountDisplay.textContent = `Left to Save: $${remaining.toFixed(
+          2
+        )}`;
+      }
     }
 
     // Add/remove over-goal class
@@ -208,27 +220,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Send update to backend to persist the change
       fetch(`/update-goal/${goalId}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          current_amount: newAmount
+          current_amount: newAmount,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            console.log("Goal updated successfully");
+          } else {
+            console.error("Failed to update goal");
+            alert("Failed to update goal. Please try again.");
+          }
         })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          console.log("Goal updated successfully");
-        } else {
-          console.error("Failed to update goal");
-          alert("Failed to update goal. Please try again.");
-        }
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        alert("An error occurred. Please try again.");
-      });
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("An error occurred. Please try again.");
+        });
     });
   });
 
@@ -237,33 +249,33 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", function () {
       const goalCard = this.closest(".goal-card");
       const goalId = goalCard.dataset.goalId;
-      
+
       // Confirm deletion
       if (confirm("Are you sure you want to delete this goal?")) {
         // Send delete request to backend
         fetch(`/delete-goal/${goalId}`, {
-          method: 'POST'
+          method: "POST",
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            goalCard.remove();
-            console.log("Goal deleted successfully");
-            
-            // Check if there are no more goals and reload page to show "no goals" message
-            const remainingGoals = document.querySelectorAll(".goal-card");
-            if (remainingGoals.length === 0) {
-              location.reload();
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              goalCard.remove();
+              console.log("Goal deleted successfully");
+
+              // Check if there are no more goals and reload page to show "no goals" message
+              const remainingGoals = document.querySelectorAll(".goal-card");
+              if (remainingGoals.length === 0) {
+                location.reload();
+              }
+            } else {
+              console.error("Failed to delete goal");
+              alert("Failed to delete goal. Please try again.");
             }
-          } else {
-            console.error("Failed to delete goal");
-            alert("Failed to delete goal. Please try again.");
-          }
-        })
-        .catch(error => {
-          console.error("Error:", error);
-          alert("An error occurred. Please try again.");
-        });
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again.");
+          });
       }
     });
   });

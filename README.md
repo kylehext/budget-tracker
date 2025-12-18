@@ -1,5 +1,5 @@
 # Budget and Save Tracker
-#### Video Demo:  <URL HERE>
+#### Video Demo:  https://www.youtube.com/watch?v=j1O2X1uyG6Y
 #### Description:
 The Budget and Save Tracker is a web-based application that allows you to create and manage your financial goals. By creating a _Budget_ goal you can easily keep track of how much money is left in your budget, with a progress bar to show the percent of your budget that has been used. By creating a _Savings_ goal, you can set a desired amount of money to save and visually see how close you are to reaching your goal.
 
