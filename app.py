@@ -1,13 +1,18 @@
 import os
+import secrets
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
 # Secret key for session signing
-app.config["SECRET_KEY"] = "dev-key-for-cs50-final-project"
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 
 # Configure session

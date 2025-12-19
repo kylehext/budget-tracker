@@ -11,4 +11,8 @@ flask_session/
 # Environment variables
 .env
 
+# Database
+instance/
+*.db
+
 
