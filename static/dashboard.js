@@ -56,19 +56,19 @@ goalTypeSelect.addEventListener("change", function () {
         
         <div class="form-group">
           <label for="budget-title">Goal Name:</label>
-          <input type="text" id="budget-title" name="title" required>
+          <input class="box-outline"type="text" id="budget-title" name="title" required>
         </div>
         
         <div class="form-group">
           <label for="budget-description">Description:</label>
-          <textarea id="budget-description" name="description"></textarea>
+          <textarea class="box-outline" id="budget-description" name="description"></textarea>
         </div>
         
         <div class="form-group">
           <label for="budget-amount">Budget Amount:</label>
           <div style="display: flex; align-items: center;">
             <span style="margin-right: 5px; font-weight: bold;">$</span>
-            <input type="number" id="budget-amount" name="target_amount" step="1" value="0" required style="max-width: 200px;">
+            <input class="box-outline" type="number" id="budget-amount" name="target_amount" step="1" value="0" required style="max-width: 200px;">
           </div>
         </div>
    
@@ -84,19 +84,19 @@ goalTypeSelect.addEventListener("change", function () {
         <input type="hidden" name="goal_type" value="savings">
         <div class="form-group">
           <label for="savings-title">Goal Name:</label>
-          <input type="text" id="savings-title" name="title" required>
+          <input class="box-outline" type="text" id="savings-title" name="title" required>
         </div>
         
         <div class="form-group">
           <label for="savings-description">Description:</label>
-          <textarea id="savings-description" name="description"></textarea>
+          <textarea class="box-outline" id="savings-description" name="description"></textarea>
         </div>
         
         <div class="form-group">
           <label for="target-amount">Target Amount:</label>
           <div style="display: flex; align-items: center;">
             <span style="margin-right: 5px; font-weight: bold;">$</span>
-            <input type="number" id="target-amount" name="target_amount" step="1" value="0" required style="max-width: 200px;">
+            <input class="box-outline" type="number" id="target-amount" name="target_amount" step="1" value="0" required style="max-width: 200px;">
           </div>
         </div>
         
@@ -104,7 +104,7 @@ goalTypeSelect.addEventListener("change", function () {
           <label for="current-amount">Current Amount:</label>
           <div style="display: flex; align-items: center;">
             <span style="margin-right: 5px; font-weight: bold;">$</span>
-            <input type="number" id="current-amount" name="current_amount" step="1" value="0" style="max-width: 200px;">
+            <input class="box-outline"type="number" id="current-amount" name="current_amount" step="1" value="0" style="max-width: 200px;">
           </div>
         </div>
         

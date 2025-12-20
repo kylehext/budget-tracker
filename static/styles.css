@@ -3,11 +3,12 @@ html {
 }
 
 body {
-    height: 100%;
+    min-height: 100%;
     margin: 0;
     font-family: "Delius", cursive;
     /* https://grabient.com/HQVgzAHANKDsCcMQAYCMUC0rhldHs6GywATMvqvLDKajTgGxhSnCMQvKvDLwAsMXCCFoo2fqRFZQ8CEA?style=linearGradient&steps=7&angle=225 */
-    background: linear-gradient(225deg, rgba(130, 205, 224, 1.000) 0.000%, rgba(149, 201, 222, 1.000) 16.667%, rgba(174, 200, 216, 1.000) 33.333%, rgba(202, 201, 208, 1.000) 50.000%, rgba(232, 206, 199, 1.000) 66.667%, rgba(255, 213, 194, 1.000) 83.333%, rgba(255, 221, 192, 1.000) 100.000%)
+    background: linear-gradient(225deg, rgb(130, 205, 224) 0.000%, rgba(149, 201, 222, 1.000) 16.667%, rgba(174, 200, 216, 1.000) 33.333%, rgba(202, 201, 208, 1.000) 50.000%, rgba(232, 206, 199, 1.000) 66.667%, rgba(255, 213, 194, 1.000) 83.333%, rgba(255, 221, 192, 1.000) 100.000%);
+    background-attachment: fixed;
 }
 
 .flash-messages {
@@ -292,11 +293,73 @@ body {
     .goals-container {
         grid-template-columns: repeat(2, 1fr);
     }
+
 }
 
 /* Responsive design - 1 column on mobile */
 @media (max-width: 576px) {
     .goals-container {
         grid-template-columns: 1fr;
+    }
+
+    .main-text {
+        margin-bottom: 200px;
+        margin-top: 150px;
+    }
+
+    .no-goals-text {
+        margin-left: 20px;
+        margin-right: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .navbar-text {
+        font-size: 14px;
+        margin-left: auto;
+    
+    }
+
+    .dashboard-main-text {
+        margin-top: 40px;
+        flex-shrink: 0;
+    }
+
+    .modal-content{
+        width: 70%;
+        margin: 30% auto;
+    }
+
+    /* Input box outline styles */
+    .box-outline {
+        border: 2px solid #333333;
+        border-radius: 4px;
+        padding: 5px;
+        width: 100%;
+    }
+
+    .box-outline:focus {
+        outline: none;
+        border-color: #000000;
+        box-shadow: 0 0 0 2px rgb(130, 205, 224);
+    }
+
+    /* Fix goal card layout */
+    .goal-info {
+        max-width: 55%;
+        flex: 1;
+    }  
+
+    .goal-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+        word-wrap: break-word;
+    }
+
+    .progress-section {
+        width: 25px;
+        height: 170px;
     }
 }
