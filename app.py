@@ -22,6 +22,30 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///instance/database.db")
 
+
+# Create tables if they don't exist
+db.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+    )
+""")
+
+db.execute("""
+    CREATE TABLE IF NOT EXISTS goals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        goal_type TEXT NOT NULL,
+        title TEXT NOT NULL,
+        description TEXT,
+        target_amount REAL NOT NULL,
+        current_amount REAL DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+""")
+
 @app.route('/')
 def index():
     if session.get('user_id'):
