@@ -23,7 +23,8 @@ Session(app)
 os.makedirs('instance', exist_ok=True)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///instance/database.db")
+db_path = os.path.join(os.getcwd(), 'instance', 'database.db')
+db = SQL(f"sqlite:///{db_path}")
 
 
 # Create tables if they don't exist
