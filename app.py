@@ -20,11 +20,17 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Create instance directory if it doesn't exist
+print(f"Current working directory: {os.getcwd()}")
 os.makedirs('instance', exist_ok=True)
+print(f"Instance directory created/verified")
 
-# Configure CS50 Library to use SQLite database
+# Configure CS50 Library to use SQLite database with absolute path
 db_path = os.path.join(os.getcwd(), 'instance', 'database.db')
+print(f"Database path: {db_path}")
+print(f"Instance directory exists: {os.path.exists('instance')}")
+
 db = SQL(f"sqlite:///{db_path}")
+print(f"Database initialized successfully")
 
 
 # Create tables if they don't exist
