@@ -14,11 +14,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 
-# Configure session
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
-
 # Create instance directory if it doesn't exist
 print(f"Current working directory: {os.getcwd()}")
 os.makedirs('instance', exist_ok=True)
@@ -29,9 +24,15 @@ db_path = os.path.join(os.getcwd(), 'instance', 'database.db')
 print(f"Database path: {db_path}")
 print(f"Instance directory exists: {os.path.exists('instance')}")
 
+# Create empty database file if it doesn't exist
+if not os.path.exists(db_path):
+    import sqlite3
+    conn = sqlite3.connect(db_path)
+    conn.close()
+    print(f"Created new database file at {db_path}")
+
 db = SQL(f"sqlite:///{db_path}")
 print(f"Database initialized successfully")
-
 
 # Create tables if they don't exist
 db.execute("""
