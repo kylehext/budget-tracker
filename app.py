@@ -15,24 +15,18 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 
 # Create instance directory if it doesn't exist
-print(f"Current working directory: {os.getcwd()}")
 os.makedirs('instance', exist_ok=True)
-print(f"Instance directory created/verified")
 
 # Configure CS50 Library to use SQLite database with absolute path
 db_path = os.path.join(os.getcwd(), 'instance', 'database.db')
-print(f"Database path: {db_path}")
-print(f"Instance directory exists: {os.path.exists('instance')}")
 
 # Create empty database file if it doesn't exist
 if not os.path.exists(db_path):
     import sqlite3
     conn = sqlite3.connect(db_path)
     conn.close()
-    print(f"Created new database file at {db_path}")
 
 db = SQL(f"sqlite:///{db_path}")
-print(f"Database initialized successfully")
 
 # Create tables if they don't exist
 db.execute("""
