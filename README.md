@@ -2,7 +2,7 @@
 
 <p align="left">
     <a href="https://www.credly.com/badges/bbee11eb-0dbf-41ec-9724-256b58f47104/public_url">
-        <img src="./static/cs50x-badge.png" alt="CS50x Badge">
+        <img src="./static/cs50x-badge-1.png" alt="CS50x Badge">
     </a>
 </p>
 
