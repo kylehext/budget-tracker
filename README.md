@@ -1,4 +1,11 @@
 # Budget and Save Tracker
+
+<p align="left">
+    <a href="https://www.credly.com/badges/bbee11eb-0dbf-41ec-9724-256b58f47104/public_url">
+        <img src="./static/cs50x-badge.png" alt="CS50x Badge">
+    </a>
+</p>
+
 #### Video Demo:  https://www.youtube.com/watch?v=j1O2X1uyG6Y
 #### Description:
 The Budget and Save Tracker is a web-based application that allows you to create and manage your financial goals. By creating a _Budget_ goal you can easily keep track of how much money is left in your budget, with a progress bar to show the percent of your budget that has been used. By creating a _Savings_ goal, you can set a desired amount of money to save and visually see how close you are to reaching your goal.
